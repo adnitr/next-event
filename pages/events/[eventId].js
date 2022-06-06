@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import { getFeaturedEvents, getEventById } from '../../helpers/api-utils';
 import EventSummary from '../../components/event-detail/event-summary';
 import EventLogistics from '../../components/event-detail/event-logistics';
@@ -8,10 +9,25 @@ function IndividualEvent(props) {
   const { event } = props;
 
   if (!event) {
-    return <ErrorAlert>No events found!</ErrorAlert>;
+    return (
+      <>
+        <Head>
+          <title>No events found!</title>
+          <meta
+            name='description'
+            content='Find a lot of great events that allows you to evolve...'
+          />
+        </Head>
+        <ErrorAlert>No events found!</ErrorAlert>
+      </>
+    );
   }
   return (
     <>
+      <Head>
+        <title>{event.title}</title>
+        <meta name='description' content={event.description} />
+      </Head>
       <EventSummary title={event.title} />
       <EventLogistics
         date={event.date}
