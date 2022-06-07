@@ -4,6 +4,7 @@ import EventSummary from '../../components/event-detail/event-summary';
 import EventLogistics from '../../components/event-detail/event-logistics';
 import EventContent from '../../components/event-detail/event-content';
 import ErrorAlert from '../../components/ui/error-alert';
+import Comments from '../../components/input/comments';
 
 function IndividualEvent(props) {
   const { event } = props;
@@ -38,6 +39,7 @@ function IndividualEvent(props) {
       <EventContent>
         <p>{event.description}</p>
       </EventContent>
+      <Comments eventId={event.id} />
     </>
   );
 }
@@ -55,10 +57,7 @@ export async function getStaticProps(context) {
 
 export async function getStaticPaths() {
   const data = await getFeaturedEvents();
-  let paramsArr = [];
-  for (const key in data) {
-    paramsArr.push({ params: { eventId: key } });
-  }
+  const paramsArr = data.map((item) => ({ params: { eventId: item.id } }));
   return {
     paths: paramsArr,
     fallback: 'blocking',

@@ -68,6 +68,7 @@ function FilteredEvents(props) {
 }
 
 export async function getServerSideProps(context) {
+  console.log('running');
   const { params } = context;
   const filterData = params.slug;
 
