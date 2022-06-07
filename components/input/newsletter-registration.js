@@ -1,13 +1,20 @@
-import { useRef } from 'react';
+import { useRef, useContext } from 'react';
 import classes from './newsletter-registration.module.css';
+import NotificationContext from '../../store/notification-context';
 
 function NewsletterRegistration() {
   const emailInputRef = useRef();
+  const notificationCtx = useContext(NotificationContext);
   async function registrationHandler(event) {
     event.preventDefault();
     const email = emailInputRef.current.value;
 
     try {
+      notificationCtx.showNotification({
+        title: 'Processing...',
+        message: 'Subscribing to the newsletter...',
+        status: 'pending',
+      });
       const response = await fetch('/api/newsletter-signup', {
         method: 'POST',
         headers: {
@@ -17,12 +24,26 @@ function NewsletterRegistration() {
       });
       const data = await response.json();
       if (response.status === 201) {
-        alert('Subscription added!');
+        notificationCtx.showNotification({
+          title: 'Success',
+          message: 'Congratulations! You have subscribed to our newsletter.',
+          status: 'success',
+        });
+        setTimeout(() => {
+          notificationCtx.hideNotification();
+        }, 2000);
       } else {
-        throw new Error(data.message);
+        throw new Error(data.message || 'Something went wrong!');
       }
     } catch (error) {
-      alert(error.message);
+      notificationCtx.showNotification({
+        title: 'Error',
+        message: error.message,
+        status: 'error',
+      });
+      setTimeout(() => {
+        notificationCtx.hideNotification();
+      }, 2000);
     }
   }
 
